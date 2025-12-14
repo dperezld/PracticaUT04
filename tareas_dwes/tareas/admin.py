@@ -1,3 +1,6 @@
 from django.contrib import admin
+# Importamos tu modelo Tarea desde el archivo models.py
+from .models import Tarea
 
-# Register your models here.
+# Le decimos al admin que "registre" (muestre) este modelo
+admin.site.register(Tarea)
