@@ -1,0 +1,8 @@
+<h1>Validación de Tareas (Profesor)</h1>
+<ul>
+  {% for tarea in tareas %}
+    <li>{{ tarea.titulo }} - Creada por: {{ tarea.creado_por }}</li>
+  {% empty %}
+    <li>No hay tareas pendientes de validar.</li>
+  {% endfor %}
+</ul>

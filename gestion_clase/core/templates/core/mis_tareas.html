@@ -1,0 +1,8 @@
+<h1>Mis Tareas</h1>
+<ul>
+  {% for tarea in tareas %}
+    <li>{{ tarea.titulo }} - {% if tarea.finalizada %}Hecha{% else %}Pendiente{% endif %}</li>
+  {% empty %}
+    <li>No tienes tareas asignadas.</li>
+  {% endfor %}
+</ul>
