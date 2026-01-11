@@ -1,8 +1,43 @@
-<h1>Validación de Tareas (Profesor)</h1>
-<ul>
-  {% for tarea in tareas %}
-    <li>{{ tarea.titulo }} - Creada por: {{ tarea.creado_por }}</li>
-  {% empty %}
-    <li>No hay tareas pendientes de validar.</li>
-  {% endfor %}
-</ul>
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="header-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Panel del Profesor</h2>
+    <span class="badge badge-warning">{{ tareas|length }} por validar</span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tarea</th>
+            <th>Tipo</th>
+            <th>Estado Actual</th>
+            <th style="text-align: right;">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in tareas %}
+        <tr>
+            <td><strong>{{ tarea.titulo }}</strong></td>
+            <td>
+                <span style="font-size: 0.8em; background: #eee; padding: 3px 7px; border-radius: 4px;">
+                    {% if tarea.tareaindividual %} Individual {% else %} Grupal {% endif %}
+                </span>
+            </td>
+            <td><span style="color: #f39c12;">⏳ Esperando Validación</span></td>
+            <td style="text-align: right;">
+                <a href="{% url 'finalizar_tarea' tarea.id %}" class="btn btn-success">Validar y Finalizar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="text-align: center; padding: 40px;">No hay tareas pendientes de evaluación.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'mis_tareas' %}" style="text-decoration: none; color: #7f8c8d;">← Volver a mi lista</a>
+</div>
+{% endblock %}

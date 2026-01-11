@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Educativa</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <div>
+            <strong>{{ user.username }}</strong> 
+            <small>({{ user.get_rol_display }})</small>
+        </div>
+        <div>
+            <a href="{% url 'mis_tareas' %}">Tareas</a>
+            {% if user.rol == 'PR' %}
+                <a href="{% url 'tareas_profesor' %}" style="color: #2ecc71;">Validación</a>
+            {% endif %}
+            <form action="{% url 'logout' %}" method="post" style="display: inline; margin-left: 15px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

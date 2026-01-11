@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Acceso Alumnos</title>
+</head>
+<body style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f4;">
+    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px;">
+        <h2 style="margin-top: 0; color: #333;">Iniciar Sesión</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #417690; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Entrar a mis tareas
+            </button>
+        </form>
+        {% if form.errors %}
+            <p style="color: red; font-size: 0.9em; margin-top: 10px;">Usuario o contraseña incorrectos.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

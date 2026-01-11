@@ -1,8 +1,39 @@
-<h1>Mis Tareas</h1>
-<ul>
-  {% for tarea in tareas %}
-    <li>{{ tarea.titulo }} - {% if tarea.finalizada %}Hecha{% else %}Pendiente{% endif %}</li>
-  {% empty %}
-    <li>No tienes tareas asignadas.</li>
-  {% endfor %}
-</ul>
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="header-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1>Mis Tareas</h1>
+    <span class="badge" style="background: #3498db; color: white;">{{ tareas|length }} asignadas</span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tarea</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in tareas %}
+        <tr>
+            <td>{{ tarea.titulo }}</td>
+            <td>
+                <span class="badge {% if tarea.finalizada %}badge-success{% else %}badge-warning{% endif %}">
+                    {% if tarea.finalizada %} ✅ Terminada {% else %} ⏳ Pendiente {% endif %}
+                </span>
+            </td>
+            <td style="text-align: right;">
+                {% if not tarea.finalizada %}
+                    <a href="{% url 'finalizar_tarea' tarea.id %}" class="btn btn-primary">Marcar como hecha</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" style="text-align: center; padding: 20px;">No tienes tareas asignadas.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
