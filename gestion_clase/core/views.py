@@ -72,11 +72,19 @@ class TareaIndividualCreateView(LoginRequiredMixin, CreateView):
     template_name = 'core/form_generico.html'
     success_url = reverse_lazy('mis_tareas')
 
+    def form_valid(self, form):
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
 class TareaGrupalCreateView(LoginRequiredMixin, CreateView):
     model = TareaGrupal
     form_class = TareaGrupalForm
     template_name = 'core/form_generico.html'
     success_url = reverse_lazy('mis_tareas')
+
+    def form_valid(self, form):
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
 
 # --- ACCIÓN: Finalizar Tarea ---
 def finalizar_tarea(request, pk):
