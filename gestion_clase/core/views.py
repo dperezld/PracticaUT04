@@ -1,22 +1,20 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, CreateView
 from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Q
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.contrib.auth.decorators import login_required
-from .models import Tarea, TareaIndividual, TareaGrupal
+from .models import Tarea, TareaIndividual, TareaGrupal, Usuario
+from .forms import RegistroUsuarioForm, TareaIndividualForm, TareaGrupalForm
 
 # --- PORTERO DE REDIRECCIÓN ÚNICO ---
 @login_required
 def root_redirect(request):
-    """
-    Esta es la función que decide el destino tras el login único.
-    """
-    # Si el usuario tiene rol de Profesor ('PR'), lo mandamos a su panel de validación
     if hasattr(request.user, 'rol') and request.user.rol == 'PR':
         return redirect('tareas_profesor') 
-    # Los alumnos van a su lista personal
     return redirect('mis_tareas') 
 
+# --- VISTAS DE TAREAS (EXISTENTES) ---
 class MisTareasView(LoginRequiredMixin, ListView):
     model = Tarea
     template_name = 'core/mis_tareas.html'
@@ -37,28 +35,65 @@ class TareasPendientesProfesorView(LoginRequiredMixin, ListView):
     login_url = '/login/'
 
     def get_queryset(self):
-        # El profesor solo ve tareas que requieren su evaluación y no han terminado
         return Tarea.objects.filter(requiere_evaluacion=True, finalizada=False)
 
+# --- NUEVA VISTA: Perfil de Usuario (Ver sus propios datos) ---
+class PerfilUsuarioView(LoginRequiredMixin, DetailView):
+    model = Usuario
+    template_name = 'core/perfil.html'
+    context_object_name = 'perfil'
+
+    def get_object(self):
+        return self.request.user
+
+# --- NUEVA VISTA: Listado de todo el alumnado/profesorado ---
+class ListaUsuariosView(LoginRequiredMixin, ListView):
+    model = Usuario
+    template_name = 'core/lista_usuarios.html'
+    context_object_name = 'usuarios'
+
+# --- NUEVA VISTA: Formulario para el alta del alumnado/profesorado ---
+class RegistroUsuarioView(LoginRequiredMixin, CreateView):
+    model = Usuario
+    form_class = RegistroUsuarioForm
+    template_name = 'core/form_generico.html'
+    success_url = reverse_lazy('lista_usuarios')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Opcional: Solo permitir que profesores creen otros usuarios
+        if not request.user.rol == 'PR':
+            return redirect('mis_tareas')
+        return super().dispatch(request, *args, **kwargs)
+
+# --- NUEVAS VISTAS: Creación de Tareas (Individual y Grupal) ---
+class TareaIndividualCreateView(LoginRequiredMixin, CreateView):
+    model = TareaIndividual
+    form_class = TareaIndividualForm
+    template_name = 'core/form_generico.html'
+    success_url = reverse_lazy('mis_tareas')
+
+class TareaGrupalCreateView(LoginRequiredMixin, CreateView):
+    model = TareaGrupal
+    form_class = TareaGrupalForm
+    template_name = 'core/form_generico.html'
+    success_url = reverse_lazy('mis_tareas')
+
+# --- ACCIÓN: Finalizar Tarea ---
 def finalizar_tarea(request, pk):
     if not request.user.is_authenticated:
         return redirect('/login/')
         
     tarea = get_object_or_404(Tarea, pk=pk)
     
-    # Marcamos como finalizada
     if hasattr(request.user, 'rol'):
         if request.user.rol == 'PR':
             tarea.finalizada = True
         elif request.user.rol == 'AL' and not tarea.requiere_evaluacion:
             tarea.finalizada = True
     
-    tarea.save() # Guardamos en PostgreSQL
+    tarea.save()
     
-    # --- REDIRECCIÓN FORZADA ---
     if hasattr(request.user, 'rol') and request.user.rol == 'PR':
-        print(f"DEBUG: El usuario {request.user.username} es PROFESOR. Redirigiendo a panel profesor.")
         return redirect('tareas_profesor')
     else:
-        print(f"DEBUG: El usuario {request.user.username} es ALUMNO. Redirigiendo a mis tareas.")
         return redirect('mis_tareas')

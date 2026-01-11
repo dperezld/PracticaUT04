@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="header-container">
+    <h1>Mi Perfil</h1>
+    <span class="badge badge-success">Cuenta Activa</span>
+</div>
+
+<div style="background: #f8f9fa; padding: 25px; border-radius: 10px; border-left: 5px solid var(--secondary-color);">
+    <p><strong>Nombre de usuario:</strong> {{ perfil.username }}</p>
+    <p><strong>Nombre completo:</strong> {{ perfil.first_name }} {{ perfil.last_name }}</p>
+    <p><strong>Email:</strong> {{ perfil.email }}</p>
+    <p><strong>Rol en el sistema:</strong> <span class="badge badge-info">{{ perfil.get_rol_display }}</span></p>
+    <p><strong>Último acceso:</strong> {{ perfil.last_login|date:"d/m/Y H:i" }}</p>
+</div>
+
+<div class="footer-actions" style="margin-top: 20px;">
+    <a href="{% url 'root' %}" class="btn btn-primary">Ir a mi Panel Principal</a>
+</div>
+{% endblock %}

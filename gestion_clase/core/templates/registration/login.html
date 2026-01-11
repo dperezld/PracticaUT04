@@ -1,23 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Acceso Alumnos</title>
-</head>
-<body style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f4;">
-    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px;">
-        <h2 style="margin-top: 0; color: #333;">Iniciar Sesión</h2>
-        <form method="post">
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 60px auto;">
+    <div class="container" style="padding: 40px; text-align: center;">
+        <h2 style="color: var(--primary-color); margin-bottom: 10px;">Acceso al Portal</h2>
+        <p style="color: #666; margin-bottom: 30px;">Introduce tus credenciales para continuar</p>
+        
+        <form method="post" style="text-align: left;">
             {% csrf_token %}
-            <div style="margin-bottom: 15px;">
-                {{ form.as_p }}
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Nombre de usuario</label>
+                <input type="text" name="username" class="form-control" 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;" required>
             </div>
-            <button type="submit" style="width: 100%; padding: 10px; background-color: #417690; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Entrar a mis tareas
+            
+            <div style="margin-bottom: 30px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Contraseña</label>
+                <input type="password" name="password" class="form-control" 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1.1rem;">
+                Iniciar Sesión
             </button>
         </form>
+        
         {% if form.errors %}
-            <p style="color: red; font-size: 0.9em; margin-top: 10px;">Usuario o contraseña incorrectos.</p>
+            <p style="color: var(--danger-color); margin-top: 20px; font-size: 0.9rem;">
+                Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.
+            </p>
         {% endif %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

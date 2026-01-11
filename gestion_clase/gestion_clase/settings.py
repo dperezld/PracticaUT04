@@ -3,6 +3,7 @@ Django settings for gestion_clase project.
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,7 +42,7 @@ ROOT_URLCONF = 'gestion_clase.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Asegura que busque en la carpeta global de templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,18 +77,21 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'es-es' # Cambiado a español para facilitar la demo
+LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# --- ARCHIVOS ESTÁTICOS (CONFIGURACIÓN CRÍTICA) ---
 STATIC_URL = 'static/'
+# Esta línea es vital para que Django encuentre tu style.css
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),
+]
 
 # --- CONFIGURACIÓN DE USUARIO PERSONALIZADO ---
 AUTH_USER_MODEL = 'core.Usuario'
 
-# Backend de autenticación necesario para modelos personalizados
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
@@ -96,3 +100,5 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
